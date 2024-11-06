@@ -1,3 +1,14 @@
+# Sprint 2
+
+## Draw.io
+https://drive.google.com/file/d/1N-79ny5r7OIzw2UTrT6gPjzNLfaaY3so/view?usp=sharing
+
+## Запуск Стендов
+
+Описан в README.md каждого стенда
+
+
+
 # pymongo-api
 
 ## Как запустить
