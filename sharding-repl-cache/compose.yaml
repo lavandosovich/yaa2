@@ -78,6 +78,32 @@ services:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port" , "27019"]
       interval: 5s
       start_period: 10s
+  
+  shard1-c:
+    image: mongo:latest
+    container_name: shard1-c-node
+    restart: always
+    ports:
+      - "27023:27023"
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.3
+    volumes:
+      - ./scripts:/scripts
+      - shard1-c-data:/data/db
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "shard1",
+        "--bind_ip_all",
+        "--port",
+        "27023"
+      ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port" , "27023"]
+      interval: 5s
+      start_period: 10s
 
   #2-й шард 
   shard2-a-node:
@@ -131,7 +157,33 @@ services:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port" , "27021" ]
       interval: 5s
       start_period: 10s
-  
+
+  shard2-c-node:
+    image: mongo:latest
+    container_name: shard2-c-node
+    restart: always
+    ports:
+      - "27024:27024"
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.4
+    volumes:
+      - ./scripts:/scripts
+      - shard2-c-data:/data/db
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "shard2",
+        "--bind_ip_all",
+        "--port",
+        "27024"
+      ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')", "--port" , "27024" ]
+      interval: 5s
+      start_period: 10s
+
   #роутер
   mongos_router:
     image: mongo:latest
@@ -157,7 +209,8 @@ services:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
       start_period: 10s
-  
+
+
   redis:
    image: redis:latest
    container_name: redis
@@ -183,7 +236,7 @@ services:
     environment:
       MONGODB_URL: "mongodb://mongos_router:27022"
       MONGODB_DATABASE_NAME: "somedb"
-      REDIS_URL: "redis://redis:6379" 
+      REDIS_URL: "redis://redis:6379"
 
 networks:
   app-network:
@@ -197,5 +250,8 @@ volumes:
   config-data:
   shard1-a-data:
   shard1-b-data:
+  shard1-c-data:
+
   shard2-a-data:
   shard2-b-data:
+  shard2-c-data:
